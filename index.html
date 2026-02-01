@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Nighat ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <title>For You ❤️</title> <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -16,7 +15,7 @@
             justify-content: center;
             background: radial-gradient(circle at center, #ffe6e9 0%, #ffc0c7 100%);
             font-family: 'Quicksand', sans-serif;
-            overflow: hidden; /* Prevents scrollbars when button moves */
+            overflow: hidden; 
             text-align: center;
             position: relative;
         }
@@ -38,7 +37,6 @@
             z-index: 10;
         }
 
-        /* The Box she needs to drag into */
         .drop-target {
             width: 220px;
             height: 180px;
@@ -71,11 +69,10 @@
             margin: 0;
         }
 
-        /* Container for the buttons */
         .button-area {
             display: flex;
             gap: 50px;
-            height: 80px; /* Reserve space */
+            height: 80px; 
             width: 100%;
             justify-content: center;
             align-items: center;
@@ -111,12 +108,10 @@
             color: white;
             border: 2px solid #d63031;
             cursor: pointer;
-            /* Important for movement */
             position: relative; 
             transition: top 0.3s ease, left 0.3s ease;
         }
 
-        /* Success Overlay */
         .success-overlay {
             display: none;
             position: fixed;
@@ -149,7 +144,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        /* Mobile specific hint */
         .mobile-hint {
             display: none;
             font-size: 0.8rem;
@@ -163,8 +157,8 @@
 </head>
 <body>
 
-    <h1>Nighat...</h1>
-    <h2>I have a very important question for you!</h2>
+    <h1 id="nameHeader">Hey there...</h1>
+    <h2>I have a very important question for you! 🌹</h2>
     <h2>Will you be my Valentine? 🌹</h2>
 
     <div class="drop-target" id="targetBox">
@@ -173,13 +167,8 @@
     </div>
 
     <div class="button-area">
-        <div class="draggable-box yes-box" id="yesBox" draggable="true">
-            YES!
-        </div>
-
-        <div class="draggable-box no-box" id="noBox">
-            NO
-        </div>
+        <div class="draggable-box yes-box" id="yesBox" draggable="true">YES!</div>
+        <div class="draggable-box no-box" id="noBox">NO</div>
     </div>
 
     <p class="mobile-hint">Tap and hold YES to drag!</p>
@@ -190,46 +179,48 @@
     </div>
 
     <script>
+        // --- NEW: URL PARAMETER LOGIC ---
+        function setDynamicName() {
+            // Get the URL parameters (everything after the ?)
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Check if 'name' exists in the URL
+            const nameFromUrl = urlParams.get('name');
+            
+            // If name exists, use it. If not, use "My Love" as default.
+            const finalName = nameFromUrl ? nameFromUrl : "My Love";
+            
+            // Update the H1 text
+            document.getElementById('nameHeader').innerText = finalName + "...";
+            
+            // Update the Browser Tab Title
+            document.title = "For " + finalName + " ❤️";
+        }
+
+        // Run this immediately when page loads
+        setDynamicName();
+
+        // --- EXISTING GAME LOGIC ---
         const yesBox = document.getElementById('yesBox');
         const noBox = document.getElementById('noBox');
         const targetBox = document.getElementById('targetBox');
         const successScreen = document.getElementById('successScreen');
-        const body = document.body;
 
-        // ==========================
-        // 1. THE "NO" BUTTON TRICK
-        // ==========================
         function moveNoBox() {
-            // Calculate usable area (window size minus button size)
             const maxX = window.innerWidth - noBox.offsetWidth - 20;
             const maxY = window.innerHeight - noBox.offsetHeight - 20;
-
             const randomX = Math.random() * maxX;
             const randomY = Math.random() * maxY;
-
-            // Switch to absolute position so it can fly anywhere
             noBox.style.position = 'absolute';
             noBox.style.left = randomX + 'px';
             noBox.style.top = randomY + 'px';
         }
 
-        // Trigger on Mouse Enter (Desktop)
         noBox.addEventListener('mouseenter', moveNoBox);
-        
-        // Trigger on Touch Start (Mobile)
-        noBox.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Stop click
-            moveNoBox();
-        });
-
-        // Trigger on Click (Just in case)
+        noBox.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoBox(); });
         noBox.addEventListener('click', moveNoBox);
 
-        // ==========================
-        // 2. DRAG & DROP LOGIC (DESKTOP)
-        // ==========================
         yesBox.addEventListener('dragstart', (e) => {
-            // We set a small delay so the element doesn't disappear immediately from view
             setTimeout(() => yesBox.style.visibility = 'hidden', 0);
         });
 
@@ -238,7 +229,7 @@
         });
 
         targetBox.addEventListener('dragover', (e) => {
-            e.preventDefault(); // Allow dropping
+            e.preventDefault();
             targetBox.classList.add('hovered');
         });
 
@@ -251,11 +242,6 @@
             celebrate();
         });
 
-        // ==========================
-        // 3. DRAG LOGIC (MOBILE TOUCH)
-        // ==========================
-        // Native Drag & Drop doesn't work well on mobile, so we use Touch Events
-        
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -267,14 +253,11 @@
         });
 
         yesBox.addEventListener('touchmove', (e) => {
-            e.preventDefault(); // Prevent scrolling while dragging
-            
+            e.preventDefault();
             const touch = e.touches[0];
-            // Update position of the Yes Box to follow finger
             yesBox.style.left = (touch.clientX - (yesBox.offsetWidth / 2)) + 'px';
             yesBox.style.top = (touch.clientY - (yesBox.offsetHeight / 2)) + 'px';
 
-            // Check if we are over the target box for visual feedback
             const targetRect = targetBox.getBoundingClientRect();
             if (
                 touch.clientX > targetRect.left &&
@@ -291,8 +274,6 @@
         yesBox.addEventListener('touchend', (e) => {
             const yesRect = yesBox.getBoundingClientRect();
             const targetRect = targetBox.getBoundingClientRect();
-
-            // Check collision (Did we drop "YES" inside the "Target"?)
             if (
                 yesRect.left < targetRect.right &&
                 yesRect.right > targetRect.left &&
@@ -301,7 +282,6 @@
             ) {
                 celebrate();
             } else {
-                // If missed, reset position
                 yesBox.style.position = 'relative';
                 yesBox.style.left = 'auto';
                 yesBox.style.top = 'auto';
@@ -312,7 +292,6 @@
         function celebrate() {
             successScreen.style.display = 'flex';
         }
-
     </script>
 </body>
 </html>
